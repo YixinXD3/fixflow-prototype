@@ -14,3 +14,20 @@
 .customer-photos{display:flex;gap:10px;flex-wrap:wrap}.customer-photo{position:relative}.customer-photo img{width:78px;height:78px;border-radius:10px;object-fit:cover}.customer-photo button{position:absolute;right:-5px;top:-6px;background:white;border:1px solid #bdd8ff;border-radius:50%;width:28px;height:28px}
 .customer-nav{grid-template-columns:repeat(5,minmax(0,1fr))}
 .header .profile[data-customer-action]>.avatar{display:grid}
+/* Customer publication and response components. */
+.customer-fields{margin:0}
+.customer-fields>div{padding:12px 0;border-bottom:1px solid var(--line)}
+.customer-fields dt{font-size:.8rem;color:var(--muted);margin-bottom:5px}
+.customer-fields dd{margin:0;line-height:1.6;overflow-wrap:anywhere;white-space:pre-wrap}
+.customer-receipt{background:#effaf5;border-color:#b8dfcf!important}
+.badge.awaiting-your-response{background:#fff1d9;color:#825300}
+.badge.waiting-for-shop-reply{background:#e9f1ff;color:#1757b9}
+.customer-publisher{margin-top:16px}
+.customer-publisher p{margin:12px 0;line-height:1.6}
+.customer-waits{border:1px solid var(--line);border-radius:10px;padding:12px}
+.customer-waits label,.customer-check{display:flex;align-items:center;gap:10px;margin:10px 0}
+.customer-waits input,.customer-check input{width:18px;min-height:18px;flex-shrink:0}
+
+
+.customer-main .page-heading p{overflow-wrap:anywhere}
+.customer-main .customer-review p{white-space:pre-wrap;overflow-wrap:anywhere}

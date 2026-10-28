@@ -35,7 +35,7 @@ The existing shared key is `fixflow-prototype-v1`, containing `{ jobs, requests,
 
 A new shared job contains `id`, `customerId`, `device`, `customerDescription`, `createdAt`, `receivedAt`, `status: 'To Do'`, `preferredTechnicianId`, and `assignedTechnicianId: null`, plus the original technician fields. The corresponding customer record uses `jobId` to reference it.
 
-**Yujie:** write the actual assignee into `assignedTechnicianId` and `assignedTechnician` on this same job. A preference does not count as assignment. The UI reads the confirmed assignee on its next render. This repository currently has no manager module.
+**Yujie:** write the actual assignee into `assignedTechnicianId` and `assignedTechnician` on this same job. A preference does not count as assignment. The UI reads the confirmed assignee on its next render. The merged main branch now supplies the manager module in manager/workspace.js.
 
 **Yixin / Tianshu:** preserve these fields when updating shared jobs. Internal logs and `updatedAt` are not public update timestamps. Store customer-visible information in `job.publicProgress`:
 
@@ -75,3 +75,11 @@ window.dispatchEvent(new Event('fixflow:customer-action-saved'));
 The adapter is mounted for Awaiting Your Response and Ready for Pickup. Receipts must be at least as recent as the publication and match its proposal ID when supplied. A new proposal must have a new request ID; an old approval must not answer it. A general conversation message is not a formal proposal response. The adapter owns its validation, saving, revised-proposal history and final-completion action. This contribution does not implement a duplicate approval engine.
 
 Ready for Pickup is a display label for `Awaiting Customer Confirmation`; it is not `Completed`. Formal final confirmation remains the responsibility of the customer-actions module. The existing technician simulation button is not real customer confirmation.
+
+## PR #1 integration update — 28 October 2026
+
+The merge retains main's manager entry, assignment, technician ownership checks, supplier follow-up, formal customer approvals and completion. Customer detail and storage protections from Yurong's branch are preserved. Main's role architecture replaces the earlier activeRole/renderRoleView compatibility shim.
+
+The integrated response adapter returns the response stored on the active approval request. The customer view checks that it belongs to the current request, including when a revised proposal replaces an older one. Conversation messages cannot answer a formal proposal.
+
+This document was renamed from CUSTOMER.md to avoid colliding with main's customer.md on Windows. Both documents are preserved. The original 27 October results are historical; see tests/pr1-merge-checks.md for checks of this merged version.

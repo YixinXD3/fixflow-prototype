@@ -1,16 +1,501 @@
-/* Customer-only additions preserve the existing technician layout. */
-.login-main{display:flex;flex-direction:column;justify-content:center;gap:30px;padding:32px 24px!important}
-.login-brand{display:flex;align-items:center;gap:14px;font-size:2rem;letter-spacing:-1px}.login-brand .logo{width:56px;height:56px}
-.login-intro h1{font-size:1.65rem}.login-intro p{margin-top:10px;color:var(--muted);font-size:1rem}
-.role-options{display:grid;gap:16px}.role-card{display:flex;align-items:center;gap:12px;text-align:left;background:#fff;border:1px solid #cce2ff;border-radius:18px;padding:20px 14px;box-shadow:0 5px 16px #1479ff08}.role-card>span:nth-child(2){flex:1}.role-card strong{font-size:1rem;display:block}.role-card small{display:block;margin-top:7px;font-size:.875rem;line-height:1.5}.role-card:hover{border-color:var(--blue);background:#f2f8ff}
-.customer-main p{font-size:1rem;overflow-wrap:anywhere}.customer-main h2{font-size:1.1rem}.customer-main .page-heading p{font-size:.95rem}.customer-main .panel{padding:18px;margin-bottom:16px}.customer-main .badge{font-size:.875rem;white-space:normal}.customer-main .primary,.customer-main .secondary{min-height:46px;font-size:.95rem}
-.customer-nav .nav-item{font-size:.75rem;min-width:0;flex:1;padding:8px 2px}.customer-nav .icon{width:22px;height:22px}
-.customer-stat{display:flex;gap:14px;align-items:center;padding:20px 18px;margin-bottom:20px;border-radius:18px;background:#eaf4ff;border:1px solid #cce2ff}.customer-stat strong{font-size:2rem;display:block}.customer-stat span{font-size:1rem;color:#526d96}
-.customer-repair-card{display:block;width:100%;text-align:left;background:#fff}.customer-card-top{display:flex;align-items:center;gap:12px;margin-bottom:16px}.customer-card-top .grow{min-width:0}.customer-card-top p{color:var(--muted);margin-top:5px}.customer-repair-card>p{margin:14px 0 6px;font-size:.9rem}.customer-repair-card small{font-size:.8rem}.customer-link{display:block;margin-top:16px;color:var(--blue);font-weight:600;font-size:.9rem}.customer-note{display:flex;gap:12px;color:var(--muted);padding:8px 4px}.customer-note p{font-size:.9rem;line-height:1.6}
-.customer-form{display:grid;gap:18px}.customer-form .field{display:flex;flex-direction:column;gap:8px;margin:0;font-size:.95rem}.customer-form input,.customer-form select,.customer-form textarea{width:100%;min-width:0;font-size:1rem}.customer-form textarea{min-height:92px;resize:vertical}.customer-form input[type=file]{font-size:.8rem;padding:10px 0;min-height:44px;border:0;background:transparent}.customer-form .icon{transform:none}
-.customer-tech{background:#fff}.customer-tech.selected{border:2px solid var(--blue);padding:17px}.customer-tech .customer-availability{color:#08795f;background:#e1f8ef;display:inline-block;padding:6px 10px;border-radius:8px;font-size:.875rem}.customer-manager{margin:14px 0 18px;font-size:.9rem!important}.customer-review{display:grid;gap:10px}.customer-review .badge{justify-self:start}.customer-review p{white-space:pre-wrap}
-.customer-timeline{list-style:none;padding:0;margin:20px 0}.customer-timeline li{position:relative;display:flex;gap:14px;min-height:76px;padding-bottom:20px}.customer-timeline li:last-child{min-height:42px;padding:0}.customer-timeline li:not(:last-child):after{content:'';position:absolute;left:15px;top:32px;bottom:0;width:2px;background:#dce8f7}.customer-timeline li.done:after{background:#70b2ff}.stage-dot{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;background:#eaf0f8;color:#6981a6;font-size:.875rem}.stage-dot .icon{width:18px;height:18px}.customer-timeline .done .stage-dot{background:#e2f4ed;color:#08795f}.customer-timeline .current .stage-dot{background:var(--blue);color:white}.customer-timeline strong{font-size:.95rem;line-height:1.5}.customer-timeline small{display:block;margin-top:5px}.customer-timeline .pending{color:#6b82af}
-.customer-message-row{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;background:#fff}.customer-message-row small{display:block;margin-top:6px}.customer-message-row p{margin-top:10px;font-size:.875rem}.customer-message-row .grow{min-width:0}.customer-message-hint{font-size:.8rem!important;color:var(--muted);padding-bottom:18px}.customer-conversation{display:flex;flex-direction:column;gap:14px;margin-bottom:24px}.customer-message{padding:14px;border:1px solid var(--line);border-radius:14px;background:white;max-width:93%;align-self:flex-start}.customer-message.sent{align-self:flex-end;background:#e8f3ff;border-color:#c9e0ff}.customer-message strong{font-size:.875rem}.customer-message p{margin:8px 0;white-space:pre-wrap;overflow-wrap:anywhere}.customer-message time{font-size:.75rem;color:#6b82af}
-.customer-photos{display:flex;gap:10px;flex-wrap:wrap}.customer-photo{position:relative}.customer-photo img{width:78px;height:78px;border-radius:10px;object-fit:cover}.customer-photo button{position:absolute;right:-5px;top:-6px;background:white;border:1px solid #bdd8ff;border-radius:50%;width:28px;height:28px}
-.customer-nav{grid-template-columns:repeat(5,minmax(0,1fr))}
-.header .profile[data-customer-action]>.avatar{display:grid}
+/* Customer additions preserve the original technician visual system. */
+
+.login-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 30px;
+  padding: 32px 24px !important;
+}
+
+.login-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 2rem;
+  letter-spacing: -1px;
+}
+
+.login-brand .logo {
+  width: 56px;
+  height: 56px;
+}
+
+.login-intro h1 {
+  font-size: 1.65rem;
+}
+
+.login-intro p {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.role-options {
+  display: grid;
+  gap: 16px;
+}
+
+.role-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  background: #fff;
+  border: 1px solid #cce2ff;
+  border-radius: 18px;
+  padding: 20px 14px;
+  box-shadow: 0 5px 16px #1479ff08;
+}
+
+.role-card > span:nth-child(2) {
+  flex: 1;
+}
+
+.role-card strong {
+  font-size: 1rem;
+  display: block;
+}
+
+.role-card small {
+  display: block;
+  margin-top: 7px;
+  font-size: .875rem;
+  line-height: 1.5;
+}
+
+.role-card:hover {
+  border-color: var(--blue);
+  background: #f2f8ff;
+}
+
+.customer-main p {
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.customer-main h2 {
+  font-size: 1.1rem;
+}
+
+.customer-main .page-heading p {
+  font-size: .95rem;
+}
+
+.customer-main .panel {
+  padding: 18px;
+  margin-bottom: 16px;
+}
+
+.customer-main .badge {
+  font-size: .875rem;
+  white-space: normal;
+}
+
+.customer-main .primary,
+.customer-main .secondary {
+  min-height: 46px;
+  font-size: .95rem;
+}
+
+.customer-nav {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.customer-nav .nav-item {
+  font-size: .75rem;
+  min-width: 0;
+  flex: 1;
+  padding: 8px 2px;
+}
+
+.customer-nav .icon {
+  width: 22px;
+  height: 22px;
+}
+
+.customer-stat {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 20px 18px;
+  margin-bottom: 20px;
+  border-radius: 18px;
+  background: #eaf4ff;
+  border: 1px solid #cce2ff;
+}
+
+.customer-stat strong {
+  font-size: 2rem;
+  display: block;
+}
+
+.customer-stat span {
+  font-size: 1rem;
+  color: #526d96;
+}
+
+.customer-repair-card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: #fff;
+}
+
+.customer-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.customer-card-top .grow {
+  min-width: 0;
+}
+
+.customer-card-top p {
+  color: var(--muted);
+  margin-top: 5px;
+}
+
+.customer-repair-card > p {
+  margin: 14px 0 6px;
+  font-size: .9rem;
+}
+
+.customer-repair-card small {
+  font-size: .8rem;
+}
+
+.customer-link {
+  display: block;
+  margin-top: 16px;
+  color: var(--blue);
+  font-weight: 600;
+  font-size: .9rem;
+}
+
+.customer-note {
+  display: flex;
+  gap: 12px;
+  color: var(--muted);
+  padding: 8px 4px;
+}
+
+.customer-note p {
+  font-size: .9rem;
+  line-height: 1.6;
+}
+
+.customer-form {
+  display: grid;
+  gap: 18px;
+}
+
+.customer-form .field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  font-size: .95rem;
+}
+
+.customer-form input,
+.customer-form select,
+.customer-form textarea {
+  width: 100%;
+  min-width: 0;
+  font-size: 1rem;
+}
+
+.customer-form textarea {
+  min-height: 92px;
+  resize: vertical;
+}
+
+.customer-form input[type=file] {
+  font-size: .8rem;
+  padding: 10px 0;
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+}
+
+.customer-form .icon {
+  transform: none;
+}
+
+.customer-tech {
+  background: #fff;
+}
+
+.customer-tech.selected {
+  border: 2px solid var(--blue);
+  padding: 17px;
+}
+
+.customer-tech .customer-availability {
+  color: #08795f;
+  background: #e1f8ef;
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: .875rem;
+}
+
+.customer-manager {
+  margin: 14px 0 18px;
+  font-size: .9rem !important;
+}
+
+.customer-review {
+  display: grid;
+  gap: 10px;
+}
+
+.customer-review .badge {
+  justify-self: start;
+}
+
+.customer-review p {
+  white-space: pre-wrap;
+}
+
+.customer-timeline {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.customer-timeline li {
+  position: relative;
+  display: flex;
+  gap: 14px;
+  min-height: 76px;
+  padding-bottom: 20px;
+}
+
+.customer-timeline li:last-child {
+  min-height: 42px;
+  padding: 0;
+}
+
+.customer-timeline li:not(:last-child):after {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 32px;
+  bottom: 0;
+  width: 2px;
+  background: #dce8f7;
+}
+
+.customer-timeline li.done:after {
+  background: #70b2ff;
+}
+
+.stage-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  background: #eaf0f8;
+  color: #6981a6;
+  font-size: .875rem;
+}
+
+.stage-dot .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.customer-timeline .done .stage-dot {
+  background: #e2f4ed;
+  color: #08795f;
+}
+
+.customer-timeline .current .stage-dot {
+  background: var(--blue);
+  color: white;
+}
+
+.customer-timeline strong {
+  font-size: .95rem;
+  line-height: 1.5;
+}
+
+.customer-timeline small {
+  display: block;
+  margin-top: 5px;
+}
+
+.customer-timeline .pending {
+  color: #6b82af;
+}
+
+.customer-message-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  background: #fff;
+}
+
+.customer-message-row small {
+  display: block;
+  margin-top: 6px;
+}
+
+.customer-message-row p {
+  margin-top: 10px;
+  font-size: .875rem;
+}
+
+.customer-message-row .grow {
+  min-width: 0;
+}
+
+.customer-message-hint {
+  font-size: .8rem !important;
+  color: var(--muted);
+  padding-bottom: 18px;
+}
+
+.customer-conversation {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.customer-message {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: white;
+  max-width: 93%;
+  align-self: flex-start;
+}
+
+.customer-message.sent {
+  align-self: flex-end;
+  background: #e8f3ff;
+  border-color: #c9e0ff;
+}
+
+.customer-message strong {
+  font-size: .875rem;
+}
+
+.customer-message p {
+  margin: 8px 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.customer-message time {
+  font-size: .75rem;
+  color: #6b82af;
+}
+
+.customer-photos {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.customer-photo {
+  position: relative;
+}
+
+.customer-photo img {
+  width: 78px;
+  height: 78px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.customer-photo button {
+  position: absolute;
+  right: -5px;
+  top: -6px;
+  background: white;
+  border: 1px solid #bdd8ff;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+}
+
+.header .profile[data-customer-action] > .avatar {
+  display: grid;
+}
+
+.customer-fields {
+  margin: 0;
+}
+
+.customer-fields > div {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.customer-fields dt {
+  font-size: .8rem;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+
+.customer-fields dd {
+  margin: 0;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.customer-receipt {
+  background: #effaf5;
+  border-color: #b8dfcf !important;
+}
+
+.badge.awaiting-your-response {
+  background: #fff1d9;
+  color: #825300;
+}
+
+.badge.waiting-for-shop-reply {
+  background: #e9f1ff;
+  color: #1757b9;
+}
+
+.customer-publisher {
+  margin-top: 16px;
+}
+
+.customer-publisher p {
+  margin: 12px 0;
+  line-height: 1.6;
+}
+
+.customer-waits {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.customer-waits label,
+.customer-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.customer-waits input,
+.customer-check input {
+  width: 18px;
+  min-height: 18px;
+  flex-shrink: 0;
+}

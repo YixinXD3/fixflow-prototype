@@ -10,17 +10,20 @@
     {
       id: 'jordan',
       name: 'Jordan Smith',
-      specialty: 'Phone & Tablet Repair'
+      specialty: 'Phone & Tablet Repair',
+      manager: 'Sarah Lee'
     },
     {
       id: 'taylor',
       name: 'Taylor Kim',
-      specialty: 'Phone & Display Repair'
+      specialty: 'Phone & Display Repair',
+      manager: 'Sarah Lee'
     },
     {
       id: 'marcus',
       name: 'Marcus Lee',
-      specialty: 'Computers & Appliances'
+      specialty: 'Computers & Appliances',
+      manager: 'David Wong'
     }
   ];
 
@@ -81,6 +84,16 @@
 
     if (!['customer', 'technician', 'manager'].includes(role)) {
       role = null;
+    }
+
+    // Do not overwrite shared records that the application could not restore.
+    const sharedRaw = sessionStorage.getItem(JOB_KEY);
+    if (sharedRaw !== null) {
+      const shared = JSON.parse(sharedRaw);
+      if (!shared || !Array.isArray(shared.jobs) ||
+          !Array.isArray(shared.requests) || !Array.isArray(shared.labels)) {
+        throw Error('Invalid shared records');
+      }
     }
 
     const raw = sessionStorage.getItem(CUSTOMER_KEY);
@@ -204,7 +217,17 @@
     const j = linked(r);
     const p = publication(j);
 
-    let status = j?.status || 'Request Submitted';
+    if (!j) {
+      return {
+        status: 'Record unavailable', p: null,
+        context: { repairId: r.id, jobId: r.jobId, requestId: null, publishedAt: null },
+        receipt: null, final: false, waiting: [],
+        reason: 'The linked repair record is unavailable.',
+        next: 'Ask the team to restore the shared repair data. Do not submit a duplicate request.'
+      };
+    }
+
+    let status = j.status;
 
     if (status === 'To Do') {
       const assigned =
@@ -237,6 +260,7 @@
     const context = {
       repairId: r.id,
       jobId: r.jobId,
+      requestId: p?.requestId || j.currentApprovalRequestId || null,
       publishedAt: p?.publishedAt || null
     };
 
@@ -256,7 +280,12 @@
             .includes(response.kind) &&
           validTime(response.at) &&
           Date.parse(response.at) >=
-            Date.parse(p.publishedAt)
+            Date.parse(p.publishedAt) &&
+          (!context.requestId || response.requestId === context.requestId ||
+            // The integrated adapter returns the response on its original request.
+            j.approvalRequests?.some(request =>
+              request.id === context.requestId && request.response === response
+            ))
         ) {
           receipt = response;
         }
@@ -264,7 +293,7 @@
         // The conversation remains available.
       }
 
-      if (!receipt) {
+      if (!receipt && !context.requestId) {
         const reply = r.messages
           .filter(m =>
             m.author === 'customer' &&
@@ -558,7 +587,7 @@
 
   const options = (values, value) =>
     values.map(v => `
-      <option ${v === value ? 'selected' : ''}>
+      <option value="${esc(v)}" ${v === value ? 'selected' : ''}>
         ${esc(v)}
       </option>
     `).join('');
@@ -725,6 +754,7 @@
           >
             <h2>${esc(t.name)}</h2>
             <p>${esc(t.specialty)}</p>
+            ${t.manager ? `<small>Manager: ${esc(t.manager)}</small>` : ''}
 
             <button
               class="${
@@ -1073,6 +1103,22 @@
           <p>${esc(r.category)}</p>
           ${badge(v.status)}
           <p>${esc(v.reason)}</p>
+        </section>
+
+        <section class="panel">
+          <h2>Your repair request</h2>
+          <dl class="customer-fields">
+            ${field('Device', r.device)}
+            ${field('Problem description', r.description || 'Not recorded')}
+            ${r.note ? field('Your note', r.note) : ''}
+          </dl>
+          ${Array.isArray(r.photos) && r.photos.some(safePhoto) ? `
+            <div class="customer-photos">${r.photos.filter(safePhoto).map(photo => `
+              <div class="customer-photo">
+                <img src="${esc(photo.src)}" alt="${esc(photo.name || 'Submitted device photo')}">
+              </div>
+            `).join('')}</div>
+          ` : ''}
         </section>
 
         <section class="panel">

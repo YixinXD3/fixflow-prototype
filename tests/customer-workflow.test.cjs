@@ -461,7 +461,7 @@ test(
           );
 
           assert.match(
-            await page.locator('.customer-fields').innerText(),
+            await page.locator('.customer-fields').last().innerText(),
             /Replacement part · Technical support/
           );
 

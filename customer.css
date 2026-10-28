@@ -499,3 +499,12 @@
   min-height: 18px;
   flex-shrink: 0;
 }
+
+/* Keep long customer identifiers and descriptions within the mobile cards. */
+.customer-main .page-heading p {
+  overflow-wrap: anywhere;
+}
+.customer-main .customer-review p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

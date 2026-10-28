@@ -1147,7 +1147,7 @@
           </dl>
 
           ${
-            j?.publicProgress && !p
+            j?.publicProgress && !p && !v.final
               ? `
                 <p class="prototype-note">
                   The repair stage changed.
@@ -1497,6 +1497,37 @@
       `
     );
   }
+
+  // Yixin: presentation navigation uses the existing role and customer record mapping.
+  window.FixFlowJourney = {
+    role: () => role,
+    records: () => mine().map(r => ({id:r.id, jobId:r.jobId, device:r.device})),
+    open(targetRole, jobId, newRequest = false) {
+      if (!['customer','manager','technician'].includes(targetRole)) return false;
+      if (role === 'manager' && window.FixFlowManager?.mayLeave && !window.FixFlowManager.mayLeave()) return false;
+      if (document.querySelector('#modal-root .sheet')) {
+        toast('Save or close the current dialog before switching workspace.'); return false;
+      }
+      if (document.querySelector('#app form') && role !== 'manager' && !confirm('Leave this page? Unsaved form edits may be lost.')) return false;
+      const repair = mine().find(r => r.jobId === jobId);
+      const job = jobs.find(j => j.id === jobId);
+      if (jobId && !job) { toast('This repair is no longer available.'); return false; }
+      if (targetRole === 'customer' && jobId && !repair) { toast('This repair is not linked to the demo customer.'); return false; }
+      if (targetRole === 'technician' && jobId && !managerRules.assignedId(job)) { toast('Ask the manager to assign a technician first.'); return false; }
+      if (targetRole === 'technician' && job) {
+        activeTechnician = managerRules.assignedId(job);
+        try { sessionStorage.setItem('fixflow-technician', activeTechnician); } catch {}
+      }
+      role = targetRole;
+      try { sessionStorage.setItem('fixflow-role', role); } catch {}
+      const page = role === 'customer' ? (newRequest ? 'customer-request' : repair ? 'customer-progress' : 'customer-home') : role === 'manager' ? 'manager' : job ? 'job' : 'dashboard';
+      // Replace synchronously so all role modules render the same selected record.
+      history.pushState(null, '', '#' + page + (jobId && !newRequest ? '/' + (role === 'customer' ? repair.id : jobId) : ''));
+      render();
+      document.querySelector('#app .main')?.scrollTo(0, 0);
+      return true;
+    }
+  };
 
   const technicianRender = render;
 

@@ -54,6 +54,8 @@
       <details><summary>Repair history (${job.logs?.length || 0})</summary><ol>${(job.logs || []).map(l=>`<li><strong>${esc(l.title)}</strong><p>${esc(l.note)}</p><small>${esc(l.time)}</small></li>`).join('')}</ol></details></section>`;
   }
   function renderManager() {
+    const requested = route().id;
+    if (requested && jobs.some(j => j.id === requested)) { selected = requested; if (!list().some(j => j.id === requested)) filter = 'all'; }
     const visible = list();
     if (!visible.some(j=>j.id === selected)) selected = visible[0]?.id || '';
     document.title = 'FixFlow | Manager';
@@ -65,7 +67,7 @@
     const contact = event.target.closest('[data-supplier-contact]');
     if (contact && dirty) { event.preventDefault(); alert('Save your stock and supplier changes before opening the saved contact details.'); return; }
     const b = event.target.closest('[data-manager-job]');
-    if (b && mayLeave()) { selected = b.dataset.managerJob; feedback = ''; renderManager(); }
+    if (b && mayLeave()) { selected = b.dataset.managerJob; history.replaceState(null, '', '#manager/' + selected); feedback = ''; renderManager(); }
     if (event.target.closest('.manager-shell [data-customer-action="logout"]') && !mayLeave()) { event.preventDefault(); event.stopImmediatePropagation(); }
   }, true);
   document.addEventListener('input', event=>{if (event.target.closest('[data-manager-form]')) dirty = true;});
@@ -73,7 +75,7 @@
     if (event.target.closest('[data-manager-form]')) dirty = true;
     if (event.target.id !== 'manager-filter') return;
     if (!mayLeave()) { event.target.value = filter; return; }
-    filter = event.target.value; selected = ''; feedback = ''; renderManager();
+    filter = event.target.value; history.replaceState(null, '', '#manager'); selected = ''; feedback = ''; renderManager();
   });
   document.addEventListener('submit', event=>{
     const form = event.target;
@@ -98,6 +100,6 @@
     renderManager();
   },true);
   window.addEventListener('beforeunload',e=>{if(dirty && route().page === 'manager'){e.preventDefault();e.returnValue='';}});
-  window.FixFlowManager = {render:renderManager};
+  window.FixFlowManager = {render:renderManager,mayLeave};
   render();
 })();

@@ -1,0 +1,11 @@
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const {append}=require('../handover.js');
+const store=require('../shared-store.js');
+const sample=()=>({id:'J1',status:'Waiting',assignedTechnicianId:'taylor',notes:'Keep this',logs:[],shortages:[{id:'s1',status:'Reported',blocking:true}],publicProgress:{summary:'Public only'}});
+const fields={tests:'Checked connector',finding:'Display faulty',next:'Wait for replacement'};
+const at='2026-10-29T02:00:00Z';
+test('handover preserves business status, public progress, blockers and original record',()=>{const j=sample(),before=JSON.stringify(j),r=append(j,fields,'taylor',at,'h1');assert.equal(JSON.stringify(j),before);assert.equal(r.job.status,'Waiting');assert.deepEqual(r.job.publicProgress,j.publicProgress);assert.deepEqual(r.job.shortages,j.shortages);assert.equal(r.job.handovers[0].jobId,'J1');assert.equal(r.job.handovers[0].authorId,'taylor');});
+test('reassignment retains authors and append-only history',()=>{const first=append(sample(),fields,'taylor',at,'h1').job;first.assignedTechnicianId='jordan';const second=append(first,fields,'jordan',at,'h2').job;assert.deepEqual(second.handovers.map(x=>x.authorId),['taylor','jordan']);assert.equal(second.logs.length,2);});
+test('foreign, unknown and final actors/states cannot save',()=>{for(const actor of ['jordan','bad'])assert.ok(append(sample(),fields,actor,at,'h1').error);for(const status of ['Completed','Awaiting Customer Confirmation'])assert.ok(append({...sample(),status},fields,'taylor',at,'h1').error);});
+test('blank, excessive, duplicate and invalid audit values are rejected',()=>{for(const key of ['tests','finding','next'])for(const value of [' ', 'x'.repeat(1001)])assert.ok(append(sample(),{...fields,[key]:value},'taylor',at,'h1').error);const j=append(sample(),fields,'taylor',at,'h1').job;assert.ok(append(j,fields,'taylor',at,'h1').error);assert.ok(append(sample(),fields,'taylor','bad','h1').error);});

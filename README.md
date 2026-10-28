@@ -27,3 +27,9 @@ Technicians can send blocking help or nonblocking advice requests to another dem
 Shared session records are versioned and validated before saving. Invalid stored data is preserved and writes are blocked until the user exports or explicitly resets it through the recovery banner. Existing customer, manager and supplier workflows remain integrated with the same records. This remains a single-tab prototype, with no server-side identity or shared database.
 
 Deployment integration checks: 58 logic tests passed, JavaScript syntax checks passed, and interactive browser checks covered create/accept/reply/resolve with reload, manager blockers, and retained customer repair details. Run the logic checks with `node --test tests/customer-actions.test.cjs tests/manager-followup.test.cjs tests/manager-integration.test.cjs tests/manager-supplier.test.cjs tests/tianshu-workflow.test.cjs`. The full automated browser suite was not rerun successfully in the integration environment because an isolated browser could not start; its earlier publication result above describes the earlier version. New browser scenarios are in `tests/tianshu-help.browser.test.cjs` (Playwright and Edge, or `FIXFLOW_BROWSER_PATH`, required).
+
+## Connected classroom journey — Yixin
+
+Use the Repair journey panel to keep the same repair selected across Customer, Manager and Technician. On phones, expand the top bar. New structured internal handovers retain tests, findings, next steps, authors and timestamps. The existing workflow modules remain the source of business actions.
+
+See [integration and demonstration notes](docs/yixin-integration.md) for weekly scope, ownership, tests, limitations and a complete demonstration script.

@@ -1,0 +1,13 @@
+/* Scoped to Tianshu's help pages; no customer/manager or global layout overrides. */
+.tianshu-help .tianshu-help-meta { margin-bottom: 20px; }
+.tianshu-help .tianshu-help-meta p { margin-top: 8px; color: #52617c; }
+.tianshu-help .conversation { margin-top: 18px; }
+.tianshu-help .conversation .message { margin-bottom: 16px; }
+.tianshu-help .conversation time { display: block; margin-top: 5px; }
+.tianshu-help .tianshu-conversation h3 { margin-top: 20px; margin-bottom: 10px; }
+.tianshu-help form[data-tianshu-reply] { margin: 18px 0; }
+.tianshu-help .request .issue { overflow-wrap: anywhere; }
+.tianshu-help .request-status small { color: #52617c; }
+.tianshu-help .field { margin-top: 14px; }
+.tianshu-help input[type="search"], .tianshu-help textarea { width: 100%; }
+.tianshu-help .badge.accepted { color: #1457ae; background: #e9f1ff; }

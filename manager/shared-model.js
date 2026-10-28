@@ -10,8 +10,9 @@
   const assignedId = job => Object.hasOwn(job, 'assignedTechnicianId') ? job.assignedTechnicianId : 'jordan';
   const proposal = job => (job.approvalRequests || []).find(p => p.id === job.currentApprovalRequestId) || null;
   function blockers(job, help = []) {
+    if(root.FixFlowHelpWorkflow)return root.FixFlowHelpWorkflow.blockers(job,help);
     const items = (job.shortages || []).filter(s => s.blocking !== false && !(s.fulfilled || s.status === 'Received')).map(s => 'Part: ' + (s.part || s.comment || s.type));
-    help.filter(r => r.jobId === job.id && !['Resolved','Completed'].includes(r.status)).forEach(() => items.push('Technical help still open'));
+    help.filter(r => r.jobId === job.id && r.blocking !== false && !['Resolved','Completed'].includes(r.status)).forEach(() => items.push('Technical help still open'));
     const p = proposal(job);
     if (p && !['approved','withdrawn','superseded'].includes(p.status)) items.push(p.status === 'pending' ? 'Customer decision pending' : 'Manager follow-up required: ' + p.status);
     return items;

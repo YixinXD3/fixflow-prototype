@@ -89,7 +89,7 @@
     const next = jobs.map(j=>j.id === original.id ? result.job : j);
     try {
       // Persist first: a failed save leaves both the shared record and form input intact.
-      sessionStorage.setItem('fixflow-prototype-v1', JSON.stringify({jobs:next,requests,labels,techs}));
+      window.FixFlowStore ? window.FixFlowStore.save({jobs:next,requests,labels,techs}) : sessionStorage.setItem('fixflow-prototype-v1', JSON.stringify({jobs:next,requests,labels,techs}));
     } catch (_) { error.textContent = 'Could not save. Your input is retained; free browser storage and retry.'; return; }
     jobs = next;
     feedback = result.changed ? 'Saved for this browser tab.' : 'No assignment change was needed.';

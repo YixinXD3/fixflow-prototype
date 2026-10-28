@@ -795,7 +795,7 @@
     nextJobs = jobs,
     nextRepairs = repairs
   ) {
-    if (blocked) {
+    if (blocked || window.FixFlowStore?.error) {
       toast('Saving is disabled until the stored data is checked.');
       return false;
     }
@@ -808,9 +808,11 @@
         sessionStorage.getItem(k)
       );
 
+      if (window.FixFlowStore) window.FixFlowStore.normalize({jobs:nextJobs,requests,labels,techs});
       sessionStorage.setItem(
         JOB_KEY,
         JSON.stringify({
+          schemaVersion: 1,
           jobs: nextJobs,
           requests,
           labels,

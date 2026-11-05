@@ -4,9 +4,11 @@
   function append(job, input, actor, at, id) {
     if (!job || !['To Do','In Progress','Waiting'].includes(job.status)) return {error:'This repair is read-only.'};
     if (!['jordan','taylor','marcus'].includes(actor) || (Object.hasOwn(job,'assignedTechnicianId') ? job.assignedTechnicianId : 'jordan') !== actor) return {error:'Only the assigned technician can save a handover.'};
+    if (job.handovers!==undefined && (!Array.isArray(job.handovers) || job.handovers.some(h=>!h || typeof h!=='object')))return {error:'Handover history is damaged. Export the stored data before resetting.'};
+    if (!input || typeof input!=='object')return {error:'Complete the handover fields.'};
     const fields={};
     for(const key of ['tests','finding','next']) { fields[key]=String(input[key]||'').trim();if(!fields[key] || fields[key].length>1000)return {error:'Complete tests, findings and next step (up to 1000 characters each).'}; }
-    if (!id || !Number.isFinite(Date.parse(at)))return {error:'A valid record ID and timestamp are required.'};
+    if (typeof id!=='string' || !id.trim() || typeof at!=='string' || !Number.isFinite(Date.parse(at)))return {error:'A valid record ID and timestamp are required.'};
     if ((job.handovers||[]).some(h=>h.id===id))return {error:'This handover has already been saved.'};
     const next=JSON.parse(JSON.stringify(job));
     next.handovers ||= [];

@@ -34,6 +34,16 @@
         if(s.images===undefined)s.images=[];
         if(!Array.isArray(s.images)||s.images.some(a=>!a||typeof a.src!=='string'))throw Error('Invalid parts images.');
       }
+      // Optional Yixin extension: retain legacy jobs, reject damaged audit history before saving.
+      if(j.handovers!==undefined){
+        if(!Array.isArray(j.handovers))throw Error('Invalid handover history.');
+        const handoverIds=new Set();
+        for(const h of j.handovers){
+          if(!h || typeof h.id!=='string' || !h.id.trim() || handoverIds.has(h.id) || h.jobId!==j.id || !['jordan','taylor','marcus'].includes(h.authorId) || typeof h.createdAt!=='string' || !Number.isFinite(Date.parse(h.createdAt)))throw Error('Invalid handover identity or authorship.');
+          handoverIds.add(h.id);
+          for(const key of ['tests','finding','next'])if(typeof h[key]!=='string' || !h[key].trim() || h[key].length>1000)throw Error('Invalid handover '+key+'.');
+        }
+      }
       if(j.approvalRequests!==undefined && (!Array.isArray(j.approvalRequests)||j.approvalRequests.some(p=>!p||typeof p!=='object')))throw Error('Invalid approval requests.');
       for(const a of j.attachments)if(typeof a.src!=='string')throw Error('Invalid attachment.');
       if(j.publicProgress!==undefined && (j.publicProgress===null || typeof j.publicProgress!=='object'))throw Error('Invalid public progress.');

@@ -1,0 +1,44 @@
+'use strict';
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const handover=require('../handover.js');
+const manager=require('../manager/shared-model.js');
+const help=require('../help-workflow.js');
+const customer=require('../customer-actions.js');
+const store=require('../shared-store.js');
+const at='2026-10-29T03:00:00+10:00';
+function seed(){return {jobs:[{id:'YX-DEMO',status:'To Do',assignedTechnicianId:null,device:'Demo phone',customer:'Demo customer',logs:[],shortages:[]}],requests:[],labels:[],techs:[]};}
+test('handover survives reassignment and shared-store round trip without changing public progress',()=>{
+ const original=seed(),job=manager.operate(original.jobs[0],'assign',{technicianId:'jordan'},at).job;
+ job.publicProgress={reason:'Inspection underway'};
+ const recorded=handover.append(job,{tests:'Checked power',finding:'Display faulty',next:'Test display'},'jordan',at,'YX-H1').job;
+ const reassigned=manager.operate(recorded,'assign',{technicianId:'taylor'},at).job;
+ let raw;const storage={setItem:(k,v)=>{raw=v;},getItem:()=>raw??null};
+ store.save({...original,jobs:[reassigned]},storage);
+ const loaded=store.load(seed(),storage);assert.equal(loaded.ok,true);
+ const restored=loaded.data.jobs[0];
+ assert.equal(restored.assignedTechnicianId,'taylor');assert.equal(restored.handovers[0].authorId,'jordan');
+ assert.deepEqual(restored.publicProgress,{reason:'Inspection underway'});assert.equal(restored.status,'To Do');
+ assert.ok(handover.append(restored,{tests:'x',finding:'x',next:'x'},'jordan',at,'YX-H2').error);
+ assert.ok(handover.append(restored,{tests:'x',finding:'x',next:'x'},'taylor',at,'YX-H2').job);
+});
+test('help, parts and approval remain independent until explicit technician resume and customer confirmation',()=>{
+ let data=seed();data.jobs[0]=manager.operate(data.jobs[0],'assign',{technicianId:'jordan'},at).job;
+ assert.equal(help.workError(data.jobs[0],'jordan',[],'start'),'');data.jobs[0].status='In Progress';
+ data=help.operate(data,'create',{jobId:'YX-DEMO',helperId:'taylor',problem:'Verify display',blocking:true},'jordan',at,'YX-HELP').data;
+ data=help.operate(data,'accept',{requestId:'YX-HELP'},'taylor',at).data;
+ data=help.operate(data,'reply',{requestId:'YX-HELP',text:'Display diagnosis verified'},'taylor',at,'YX-REPLY').data;
+ data.jobs[0].shortages=[{id:'YX-PART',type:'Display',blocking:true,status:'Reported',fulfilled:false}];
+ data.jobs[0]=manager.operate(data.jobs[0],'propose',{reason:'Display failed',description:'Replace display',additionalCost:'80'},at,'YX-PROP').job;
+ assert.equal(help.blockers(data.jobs[0],data.requests).length,3);
+ data=help.operate(data,'resolve',{requestId:'YX-HELP'},'jordan',at).data;
+ assert.equal(help.blockers(data.jobs[0],data.requests).length,2);assert.match(help.workError(data.jobs[0],'jordan',data.requests),/Part/);
+ data.jobs[0]=manager.operate(data.jobs[0],'shortage',{shortageId:'YX-PART',owner:'Demo manager',status:'Received',nextAction:'Fit display',expectedArrival:''},at).job;
+ assert.equal(data.jobs[0].status,'Waiting');assert.match(help.workError(data.jobs[0],'jordan',data.requests),/Customer decision/);
+ assert.equal(customer.applyResponse(data.jobs[0],{requestId:'YX-PROP',kind:'approved',at}).ok,true);
+ assert.equal(data.jobs[0].status,'Waiting');assert.equal(help.workError(data.jobs[0],'jordan',data.requests),'');
+ assert.equal(customer.confirmCompletion(data.jobs[0],{at}).ok,false);
+ data.jobs[0].status='In Progress';assert.equal(help.workError(data.jobs[0],'jordan',data.requests,'ready'),'');
+ data.jobs[0].status='Awaiting Customer Confirmation';assert.equal(customer.confirmCompletion(data.jobs[0],{at}).ok,true);
+ assert.equal(data.jobs[0].status,'Completed');assert.equal(customer.confirmCompletion(data.jobs[0],{at}).ok,false);
+});

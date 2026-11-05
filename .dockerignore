@@ -1,0 +1,9 @@
+.git
+.data
+*.sqlite3*
+*.zip
+__pycache__
+node_modules
+.env
+tests
+backend/tests

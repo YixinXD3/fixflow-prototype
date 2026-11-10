@@ -7,3 +7,8 @@ __pycache__/
 .env
 .venv/
 test-results/
+
+*.zip
+*.log
+*.pid
+.coverage

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Create Interview Record"
+  short_description: "Create safe, de-identified interview records"
+  default_prompt: "Use $create-interview-record to turn my de-identified interview notes into a traceable evidence record."

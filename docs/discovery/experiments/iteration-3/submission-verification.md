@@ -9,6 +9,7 @@ Date: 2026-11-10, Australia/Brisbane. Starting personal revision `7ed6d2d`; cour
 | Backend unit/API tests | 20/20 passed; includes original 15, private-blocker regression and four synthetic scenario/continuation checks |
 | Retained prototype pure rule suites | 74/74 passed after source paths moved to public/ |
 | New web client syntax | `node --check web/app.js` passed |
+| GitHub production container | Build, named-volume UID write check, Waitress startup and database health probe passed on revision be7b20f |
 | Seed creation and rerun | Eight scenarios have intended states; rerun/reopen preserves changes rather than resetting them |
 | Synthetic multi-blocker browser flow | Executed through real web forms and HTTP API against a dedicated local SQLite database |
 | Resolve help then Continue | Rejected with remaining Part and Customer decision blockers |
@@ -31,8 +32,12 @@ The former blocker text repeated private help problem text to managers and newly
 - [Completed after reload](../../../presentation/images/synthetic-completed.png)
 - [390 px customer layout](../../../presentation/images/synthetic-mobile.png)
 - Full historical Playwright suite, every account/upload/revision form, keyboard-only and all mobile screens were not exercised here.
-- The local Docker executable is unavailable. A container build, mounted-volume permission check and health probe are configured in CI; report their actual remote result separately, not as a local build pass.
+- The local Docker executable is unavailable. The [GitHub CI run](https://github.com/YixinXD3/fixflow-prototype/actions/runs/42750515775) on be7b20f passed both validate and container jobs. The container job built the production image, verified the named volume was writable as the application user and started Waitress in production mode with a database health probe. This is CI container verification, not a public-host deployment or a local Docker build.
 - No paid host, public backend endpoint, off-site backup schedule, real customer data, review signature or final assessment tag was created.
 - The existing Pages URL is still the static demonstration until the personal branch is merged and the new Pages workflow/source is selected.
 
 Run commands are in [the application guide](../../../../apps/fixflow/README.md). Final submission requirements and evidence boundaries are in [the handoff map](../../../team/submission-map.md).
+
+## Delivery
+
+[Personal PR #4](https://github.com/YixinXD3/fixflow-prototype/pull/4) contains the reorganization, synthetic data and privacy fix. It does not modify or merge into the course repository. The clean package was extracted and checked for valid paths, retained original-main ancestry and absence of runtime database/credential files. The public Pages main remains untouched pending review and the documented Pages-source transition.

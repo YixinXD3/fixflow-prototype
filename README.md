@@ -1,37 +1,39 @@
-# FixFlow persistent repair workspace
+# FixFlow — repair coordination classroom project
 
-FixFlow now includes a relational database, authenticated API and server-backed customer, manager and technician workspace. The original static classroom prototype is retained at the repository root; the Python server and Docker image serve the new `web/` client. The current GitHub Pages URL remains the earlier static demo until a backend host is selected.
+FixFlow connects a customer's repair request, manager assignment, technician handover and collaboration, and final customer confirmation. The complete application has a Python API, a relational SQLite database and authenticated workspaces. All supplied demonstration records are fictional.
 
-## Run the complete application locally
+## Run the complete service
 
-Use Python 3.12 or newer, from this directory:
-
-```sh
-python -m backend.server --demo
-```
-
-Open http://127.0.0.1:8000. On the first startup, save the generated local password printed in the terminal. Manager: `manager@example.test`; fictional staff: `jordan@example.test`, `taylor@example.test`, `marcus@example.test`; fictional customers: `alex@example.test`, `sam@example.test`. All local demo accounts initially share the generated password. Existing data and passwords are not reset on later starts. Without `--demo`, only the manager is created. Customers can register; the manager creates staff in Team accounts. Do not reuse local demo credentials online.
-
-The database is `.data/fixflow.sqlite3` by default. Set `FIXFLOW_DB` to another path if needed. Existing browser-session prototype data is not imported. There is no real payment, automatic supplier ordering, SMS or AI report service.
-
-## Verification
+Python 3.12+ is required. From the repository root:
 
 ```sh
-python -m unittest discover -s backend/tests -v
-node --check web/app.js
+python3 apps/fixflow/run.py --demo
 ```
 
-Backend tests use isolated temporary databases. They exercise actual SQL transactions, role access, proposal history, independent blockers, optimistic concurrency, sessions/CSRF/origin, HTTP routes and backup/restore. The original prototype rule tests remain under `tests/`; its historical browser tests require Playwright and a compatible isolated browser.
+Open http://127.0.0.1:8000. A fresh database creates six fictional accounts and eight linked repair scenarios. The terminal prints a randomly generated initial password once. Manager: `manager@example.test`; technicians: `jordan@example.test`, `taylor@example.test`, `marcus@example.test`; customers: `alex@example.test`, `sam@example.test`. There is no fixed password in this repository. Existing databases and passwords are retained; a restart does not reset repairs. For a new scenario set, use a new `FIXFLOW_DB` path rather than deleting an existing database.
 
-## Read next
+## Repository map
 
-- [Local setup, production deployment and backups](docs/backend-deployment.md)
-- [API contract](docs/backend-api.md)
-- [Implemented relational data and role rules](docs/backend-data.md)
-- [Actual verification and remaining acceptance work](docs/backend-verification.md)
-- [MVP implementation scope and evidence boundary](docs/backend-scope.md)
-- [Earlier static prototype documentation](docs/static-prototype-readme.md)
+| Directory | Contents |
+| --- | --- |
+| [apps/](apps/README.md) | Complete FixFlow app, retained static prototype and tests |
+| [docs/](docs/README.md) | Architecture, API/data contracts, synthetic-data walkthrough, verification and submission mapping |
+| [guides/](guides/README.md) | Unmodified teaching guidance copied from the course repository |
+| [infra/](infra/README.md) | Container, optional backend deployment configuration and operational instructions |
+| [.agents/skills/](.agents/skills/README.md) | Supplied course skill source; not a claim of a newly authored student skill |
 
-Deployment is prepared but not provisioned. The user requested code delivery and upload first, with the hosting platform decided later. The optional Render blueprint uses paid resources and must be reviewed before provisioning. A persistent writable volume is required; GitHub Pages cannot execute this backend.
+## Which website is which?
 
-AI assistance: Codex implemented this backend increment and developer verification. It does not establish participant findings, team review signatures, measured business outcomes or independent code contributions by each student. Students must review and understand the implementation and keep coursework contribution claims accurate.
+- **Complete application:** served locally by the command above; web UI → real HTTP API → SQLite. API health is `/api/health`.
+- **Static demonstration:** [existing GitHub Pages](https://yixinxd3.github.io/fixflow-prototype/#login). Its code is now under `apps/fixflow/public/`. It uses same-tab sessionStorage and has no Python API.
+- A paid backend host has not been provisioned by this change. [Deployment instructions](infra/deployment/README.md) explain the distinction. The Pages workflow publishes only the retained prototype, never the database or backend source.
+
+## Read and verify
+
+- [Application setup and checks](apps/fixflow/README.md)
+- [Synthetic scenario guide](docs/design/synthetic-service-flow.md)
+- [API](docs/engineering/backend-api.md) and [implemented data/ERD](docs/engineering/backend-data.md)
+- [Current developer verification](docs/discovery/experiments/iteration-3/submission-verification.md)
+- [Submission mapping, provenance and remaining coursework checks](docs/team/submission-map.md)
+
+Synthetic records are permitted demonstration fixtures, not interviews, participant statements, consent or measured outcomes. There are no real payments, automatically sent supplier orders or messages, or real AI analytics. AI assistance and existing member ownership are recorded in the submission mapping.

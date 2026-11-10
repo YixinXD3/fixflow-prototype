@@ -1,14 +1,17 @@
-name: Validate persistent backend
+name: Validate FixFlow submission
 on:
   push:
-    paths: ['backend/**', 'web/**', 'requirements.txt', '.github/workflows/backend-checks.yml']
+    paths: ['apps/fixflow/**', 'infra/**', 'docs/**', '.github/workflows/backend-checks.yml']
   pull_request:
-    paths: ['backend/**', 'web/**', 'requirements.txt', '.github/workflows/backend-checks.yml']
+    paths: ['apps/fixflow/**', 'infra/**', 'docs/**', '.github/workflows/backend-checks.yml']
 permissions:
   contents: read
 jobs:
   validate:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/fixflow
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -20,3 +23,21 @@ jobs:
       - run: python -m pip install -r requirements.txt
       - run: python -m unittest discover -s backend/tests -v
       - run: node --check web/app.js
+      - run: node --test tests/customer-actions.test.cjs tests/manager-integration.test.cjs tests/manager-followup.test.cjs tests/manager-supplier.test.cjs tests/tianshu-workflow.test.cjs tests/handover.test.cjs tests/journey.test.cjs tests/yixin-cross-role.test.cjs
+      - run: python check_submission.py
+  container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -f infra/containers/fixflow.Dockerfile -t fixflow-check .
+      - name: Check production container and mounted data permissions
+        run: |
+          docker volume create fixflow-check-data
+          docker run --rm -v fixflow-check-data:/app/storage --entrypoint python fixflow-check -c "import os,pathlib; p=pathlib.Path('/app/storage'); assert os.access(p,os.W_OK)"
+          docker run -d --name fixflow-check -p 8000:8000 -v fixflow-check-data:/app/storage -e FIXFLOW_ENV=production -e FIXFLOW_PUBLIC_ORIGIN=https://fixflow.example.test -e FIXFLOW_DB=/app/storage/fixflow.sqlite3 -e FIXFLOW_ADMIN_EMAIL=manager@example.test -e FIXFLOW_ADMIN_PASSWORD="$(openssl rand -hex 24)" fixflow-check
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8000/api/health; then exit 0; fi
+            sleep 1
+          done
+          docker logs fixflow-check
+          exit 1
